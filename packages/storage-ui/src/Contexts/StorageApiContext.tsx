@@ -70,6 +70,7 @@ type StorageApiContext = {
   status: DirectAuthContextStatus
   resetStatus(): void
   accountRestricted?: boolean
+  accountBlacklisted?: boolean
 }
 
 const StorageApiContext = React.createContext<StorageApiContext | undefined>(undefined)
@@ -105,6 +106,7 @@ const StorageApiProvider = ({ apiUrl, withLocalStorage = true, children }: Stora
   { exp: number; enckey?: string; mps?: string; uuid: string } | undefined
   >(undefined)
   const [accountRestricted, setAccountRestricted] = useState(false)
+  const [accountBlacklisted, setAccountBlacklisted] = useState(false)
 
   // returning user
   const isReturningUserLocal = localStorageGet(isReturningUserStorageKey)
@@ -234,7 +236,7 @@ const StorageApiProvider = ({ apiUrl, withLocalStorage = true, children }: Stora
   useEffect(() => {
     if (accessToken && accessToken.token && storageApiClient) {
       storageApiClient?.setToken(accessToken.token)
-      const decodedAccessToken = jwtDecode<{ perm: { secured?: string; files?: string } }>(
+      const decodedAccessToken = jwtDecode<{ perm: { secured?: string; files?: string; storage?: string } }>(
         accessToken.token
       )
 
@@ -242,6 +244,12 @@ const StorageApiProvider = ({ apiUrl, withLocalStorage = true, children }: Stora
         setAccountRestricted(true)
       } else {
         setAccountRestricted(false)
+      }
+
+      if (decodedAccessToken.perm.storage === "blacklisted") {
+        setAccountBlacklisted(true)
+      } else {
+        setAccountBlacklisted(false)
       }
     }
   }, [accessToken, storageApiClient])
@@ -263,19 +271,19 @@ const StorageApiProvider = ({ apiUrl, withLocalStorage = true, children }: Stora
     }
   }
 
+
   useEffect(() => {
-    if (refreshToken && refreshToken.token) {
+    if (refreshToken?.token && accessToken?.token) {
       try {
-        const decoded = jwtDecode<{ mps?: string; enckey?: string; exp: number; uuid: string }>(
+        const decodedRefresh = jwtDecode<{ mps?: string; enckey?: string; exp: number; uuid: string }>(
           refreshToken.token
         )
-
-        setDecodedRefreshToken(decoded)
+        setDecodedRefreshToken(decodedRefresh)
       } catch (error) {
         console.error("Error decoding access token")
       }
     }
-  }, [refreshToken])
+  }, [refreshToken, accessToken])
 
   const isLoggedIn = () => {
     if (isLoadingUser) {
@@ -389,6 +397,7 @@ const StorageApiProvider = ({ apiUrl, withLocalStorage = true, children }: Stora
         email: userInfo.email,
         publicAddress: userInfo.address
       })
+
       setTokensAndSave(access_token, refresh_token)
       setReturningUser()
     } catch(error) {
@@ -422,7 +431,8 @@ const StorageApiProvider = ({ apiUrl, withLocalStorage = true, children }: Stora
         selectWallet,
         resetAndSelectWallet,
         logout,
-        accountRestricted
+        accountRestricted,
+        accountBlacklisted
       }}
     >
       {children}
