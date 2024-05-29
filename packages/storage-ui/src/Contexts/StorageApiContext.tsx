@@ -273,7 +273,7 @@ const StorageApiProvider = ({ apiUrl, withLocalStorage = true, children }: Stora
 
 
   useEffect(() => {
-    if (refreshToken?.token && accessToken?.token) {
+    if (refreshToken?.token) {
       try {
         const decodedRefresh = jwtDecode<{ mps?: string; enckey?: string; exp: number; uuid: string }>(
           refreshToken.token
@@ -283,7 +283,7 @@ const StorageApiProvider = ({ apiUrl, withLocalStorage = true, children }: Stora
         console.error("Error decoding access token")
       }
     }
-  }, [refreshToken, accessToken])
+  }, [refreshToken])
 
   const isLoggedIn = () => {
     if (isLoadingUser) {
@@ -397,7 +397,6 @@ const StorageApiProvider = ({ apiUrl, withLocalStorage = true, children }: Stora
         email: userInfo.email,
         publicAddress: userInfo.address
       })
-
       setTokensAndSave(access_token, refresh_token)
       setReturningUser()
     } catch(error) {
