@@ -359,8 +359,6 @@ const FilesList = () => {
   const [isSurveyBannerVisible, setIsSurveyBannerVisible] = useState(true)
   const [contextMenuPosition, setContextMenuPosition] = useState<AnchorMenuPosition | null>(null)
 
-  console.log(accountBlacklisted)
-
   const items: FileSystemItemType[] = useMemo(() => {
     let temp = []
 
