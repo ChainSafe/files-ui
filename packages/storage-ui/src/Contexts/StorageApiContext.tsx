@@ -249,7 +249,7 @@ const StorageApiProvider = ({ apiUrl, withLocalStorage = true, children }: Stora
       if (decodedAccessToken.perm.storage === "blacklisted") {
         setAccountBlacklisted(true)
       } else {
-        setAccountBlacklisted(true)
+        setAccountBlacklisted(false)
       }
     }
   }, [accessToken, storageApiClient])
