@@ -118,6 +118,12 @@ msgstr "Billing start time"
 msgid "Browse files"
 msgstr "Browse files"
 
+msgid "Bucket Id"
+msgstr "Bucket Id"
+
+msgid "Bucket Id copied"
+msgstr "Bucket Id copied"
+
 msgid "Bucket name"
 msgstr "Bucket name"
 
@@ -273,6 +279,9 @@ msgstr "Destination Address"
 
 msgid "Didn't receive the email ?"
 msgstr "Didn't receive the email ?"
+
+msgid "Discord support"
+msgstr "Discord support"
 
 msgid "Docs"
 msgstr "Docs"
@@ -804,6 +813,9 @@ msgstr "You will need to sign a message in your wallet to complete sign in."
 
 msgid "You've got a payment due. Until you've settled up, we've placed your account in restricted mode"
 msgstr "You've got a payment due. Until you've settled up, we've placed your account in restricted mode"
+
+msgid "Your account has been blacklisted due to unusual activity"
+msgstr "Your account has been blacklisted due to unusual activity"
 
 msgid "Your account is restricted. Until you&apos;ve settled up, you can&apos;t upload any new content."
 msgstr "Your account is restricted. Until you&apos;ve settled up, you can&apos;t upload any new content."
