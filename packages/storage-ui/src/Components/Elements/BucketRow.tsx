@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState, useCallback } from "react"
-import { makeStyles, createStyles, useOnClickOutside } from "@chainsafe/common-theme"
+import { makeStyles, createStyles, useOnClickOutside, useThemeSwitcher } from "@chainsafe/common-theme"
 import {
+  CopyIcon,
   DeleteSvg,
   EditSvg,
   formatBytes,
@@ -12,7 +13,8 @@ import {
   TableCell,
   TableRow,
   Typography,
-  useHistory
+  useHistory,
+  useToasts
 } from "@chainsafe/common-components"
 import { t, Trans } from "@lingui/macro"
 import { Bucket } from "@chainsafe/files-api-client"
@@ -23,7 +25,7 @@ import clsx from "clsx"
 import { Form, FormikProvider, useFormik } from "formik"
 import { nameValidator } from "../../Utils/validationSchema"
 
-const useStyles = makeStyles(({ animation, constants, breakpoints }: CSSTheme) =>
+const useStyles = makeStyles(({ palette, animation, constants, breakpoints }: CSSTheme) =>
   createStyles({
     dropdownIcon: {
       "& svg": {
@@ -93,6 +95,15 @@ const useStyles = makeStyles(({ animation, constants, breakpoints }: CSSTheme) =
       [breakpoints.down("md")]: {
         margin: `${constants.generalUnit * 4.2}px 0`
       }
+    },
+    idRow: {
+      display: "flex",
+      alignItems: "center"
+    },
+    copyIcon: {
+      fontSize: "16px",
+      fill: palette.additional["gray"][8],
+      marginLeft: "8px"
     }
   })
 )
@@ -106,6 +117,9 @@ interface Props {
 const BucketRow = ({ bucket, onRemoveBucket, handleContextMenu, handleRename }: Props) => {
   const classes = useStyles()
   const { redirect } = useHistory()
+  const { addToast } = useToasts()
+  const { desktop } = useThemeSwitcher()
+
   const menuItems = useMemo(() => [
     {
       contents: (
@@ -168,6 +182,14 @@ const BucketRow = ({ bucket, onRemoveBucket, handleContextMenu, handleRename }: 
 
   useOnClickOutside(formRef, formik.submitForm)
 
+  const onCopyBucketId = () => {
+    navigator.clipboard.writeText(bucket.id)
+    addToast({
+      title: t`Bucket Id copied`,
+      type: "success"
+    })
+  }
+
   return (
     <TableRow
       type="grid"
@@ -217,6 +239,19 @@ const BucketRow = ({ bucket, onRemoveBucket, handleContextMenu, handleRename }: 
           )
         }
       </TableCell>
+      {desktop &&
+        <TableCell
+          data-cy="cell-file-system-id"
+          align="left"
+          className={classes.idRow}
+        >
+          {bucket.id }
+          <CopyIcon
+            className={classes.copyIcon}
+            onClick={onCopyBucketId}
+          />
+        </TableCell>
+      }
       <TableCell
         data-cy="cell-file-system-type"
       >
