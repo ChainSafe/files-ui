@@ -275,7 +275,7 @@ const ApiKeys = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {keys.map(k =>
+            {keys.filter(k => k.type !== "gaming").map(k =>
               <TableRow
                 key={k.id}
                 type='grid'
