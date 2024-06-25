@@ -44,6 +44,7 @@ import { ISelectedFile, useFileBrowser } from "../../../Contexts/FileBrowserCont
 import SurveyBanner from "../SurveyBanner"
 import { useStorageApi } from "../../../Contexts/StorageApiContext"
 import RestrictedModeBanner from "../../Elements/RestrictedModeBanner"
+import BlacklistedModeBanner from "../../Elements/BlacklistedModeBanner"
 import { DragPreviewLayer } from "./DragPreviewLayer"
 import FolderBreadcrumb from "./FolderBreadcrumb"
 import { DragTypes } from "./DragConstants"
@@ -326,7 +327,7 @@ const sortFoldersFirst = (a: FileSystemItemType, b: FileSystemItemType) =>
 
 const FilesList = () => {
   const { themeKey, desktop } = useThemeSwitcher()
-  const { accountRestricted } = useStorageApi()
+  const { accountRestricted, accountBlacklisted } = useStorageApi()
   const {
     heading,
     controls = true,
@@ -1212,9 +1213,8 @@ const FilesList = () => {
           </>
         )
       }
-      {accountRestricted &&
-        <RestrictedModeBanner />
-      }
+      {accountRestricted && <RestrictedModeBanner />}
+      {accountBlacklisted && <BlacklistedModeBanner />}
     </>
   )
 }

@@ -23,6 +23,7 @@ import { useStorageApi } from "../../Contexts/StorageApiContext"
 import { usePageTrack } from "../../Contexts/PosthogContext"
 import { Helmet } from "react-helmet-async"
 import { cid as isCid } from "is-ipfs"
+import BlacklistedModeBanner from "../Elements/BlacklistedModeBanner"
 
 export const desktopGridSettings = "2fr 3fr 180px 110px 80px 20px 70px !important"
 export const mobileGridSettings = "2fr 4fr 50px !important"
@@ -100,7 +101,7 @@ const CidsPage = () => {
     isLoadingPins,
     resetPins
   } = useStorage()
-  const { accountRestricted } = useStorageApi()
+  const { accountRestricted, accountBlacklisted } = useStorageApi()
   const [addCIDOpen, setAddCIDOpen] = useState(false)
   const [sortColumn, setSortColumn] = useState<SortColumn>("date_uploaded")
   const [sortDirection, setSortDirection] = useState<SortDirection>("descend")
@@ -294,9 +295,8 @@ const CidsPage = () => {
         close={() => setAddCIDOpen(false)}
         modalOpen={addCIDOpen}
       />
-      {accountRestricted &&
-        <RestrictedModeBanner />
-      }
+      {accountRestricted && <RestrictedModeBanner />}
+      {accountBlacklisted && <BlacklistedModeBanner />}
     </>
   )
 }

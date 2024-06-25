@@ -3,7 +3,7 @@ import React, { useState } from "react"
 import { ReactNode } from "react"
 import clsx from "clsx"
 import { useStorageApi } from "../../Contexts/StorageApiContext"
-import { CssBaseline } from "@chainsafe/common-components"
+import {  CssBaseline } from "@chainsafe/common-components"
 import AppHeader from "./AppHeader"
 import AppNav from "./AppNav"
 

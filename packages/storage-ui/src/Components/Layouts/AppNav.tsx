@@ -18,7 +18,6 @@ import {
   useLocation,
   KeySvg,
   CreditCardOutlinedSvg
-  // FileWithImageSvg
 } from "@chainsafe/common-components"
 import { ROUTE_LINKS } from "../StorageRoutes"
 import { Trans } from "@lingui/macro"

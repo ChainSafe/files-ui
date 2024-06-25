@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react"
-import { makeStyles, createStyles } from "@chainsafe/common-theme"
+import { makeStyles, createStyles, useThemeSwitcher } from "@chainsafe/common-theme"
 import {
   Button,
   Dialog,
@@ -30,9 +30,10 @@ import { usePageTrack } from "../../Contexts/PosthogContext"
 import { Bucket, FileSystemType } from "@chainsafe/files-api-client"
 import { Helmet } from "react-helmet-async"
 import AnchorMenu, { AnchorMenuPosition } from "../UI-components/AnchorMenu"
+import BlacklistedModeBanner from "../Elements/BlacklistedModeBanner"
 
-export const desktopGridSettings = "3fr 150px 150px 70px !important"
-export const mobileGridSettings = "3fr 100px 100px 70px !important"
+export const desktopGridSettings = "2fr 5fr 150px 150px 50px !important"
+export const mobileGridSettings = "1fr 150px 110px 50px !important"
 
 const useStyles = makeStyles(({ breakpoints, animation, constants, typography }: CSSTheme) =>
   createStyles({
@@ -127,7 +128,7 @@ type SortDirection = "ascend" | "descend"
 const BucketsPage = () => {
   const classes = useStyles()
   const { storageBuckets, createBucket, refreshBuckets, removeBucket, editBucket } = useStorage()
-  const { accountRestricted } = useStorageApi()
+  const { accountRestricted, accountBlacklisted } = useStorageApi()
   const [isCreateBucketModalOpen, setIsCreateBucketModalOpen] = useState(false)
   const [bucketToRemove, setBucketToRemove] = useState<Bucket | undefined>()
   const [isRemovingBucket, setIsRemovingBucket] = useState(false)
@@ -135,6 +136,8 @@ const BucketsPage = () => {
   const [contextMenuOptions, setContextMenuOptions] = useState<IMenuItem[]>([])
   const [sortColumn, setSortColumn] = useState<SortColumn | undefined>(undefined)
   const [sortDirection, setSortDirection] = useState<SortDirection>("descend")
+
+  const { desktop } = useThemeSwitcher()
 
   const generalContextMenuOptions: IMenuItem[] = useMemo(() => [
     {
@@ -317,6 +320,14 @@ const BucketsPage = () => {
             >
               <Trans>Name</Trans>
             </TableHeadCell>
+            {desktop &&
+              <TableHeadCell
+                data-cy="buckets-table-header-id"
+                align="left"
+              >
+                <Trans>Bucket Id</Trans>
+              </TableHeadCell>
+            }
             <TableHeadCell
               data-cy="buckets-table-header-file-system"
               align="center"
@@ -353,9 +364,8 @@ const BucketsPage = () => {
             )}
         </TableBody>
       </Table>
-      {accountRestricted &&
-        <RestrictedModeBanner />
-      }
+      {accountRestricted && <RestrictedModeBanner />}
+      {accountBlacklisted && <BlacklistedModeBanner />}
       <CustomModal
         active={isCreateBucketModalOpen}
         className={classes.createBucketModal}
